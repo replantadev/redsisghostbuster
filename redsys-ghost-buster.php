@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Plugin Name: Redsys Ghost Buster
  * Plugin URI: https://github.com/replantadev/redsisghostbuster
