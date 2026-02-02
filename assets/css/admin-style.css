@@ -1,0 +1,596 @@
+/**
+ * Replanta Ghost Orders Detector - Admin Styling
+ */
+
+.replanta-god-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.replanta-god-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.replanta-god-header h1 {
+    margin: 0 0 10px 0;
+    font-size: 28px;
+    color: white;
+}
+
+.replanta-god-header .subtitle {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* TABS */
+.replanta-god-tabs {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f9f9f9;
+}
+
+.replanta-god-tab {
+    flex: 1;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-weight: 500;
+}
+
+.replanta-god-tab:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.replanta-god-tab.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    background: white;
+}
+
+/* CONTENT */
+.replanta-god-content {
+    padding: 30px;
+}
+
+/* DASHBOARD */
+.replanta-god-dashboard {
+    animation: fadeIn 0.3s ease;
+}
+
+.replanta-god-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-box {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    border-left: 4px solid #667eea;
+    transition: transform 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-5px);
+}
+
+.stat-box.ok {
+    border-left-color: #27ae60;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+.stat-box.warning {
+    border-left-color: #f39c12;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.stat-box.info {
+    border-left-color: #3498db;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #333;
+}
+
+.stat-subtitle {
+    font-size: 12px;
+    color: #999;
+    margin: 0;
+}
+
+/* INFO BOX */
+.replanta-god-info-box {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.replanta-god-info-box h3 {
+    margin-top: 0;
+    color: #667eea;
+}
+
+.replanta-god-info-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.replanta-god-info-box li {
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.replanta-god-info-box li:last-child {
+    border-bottom: none;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    margin: 0 5px;
+}
+
+.badge-success {
+    background: #27ae60;
+    color: white;
+}
+
+.badge-danger {
+    background: #e74c3c;
+    color: white;
+}
+
+.badge-warning {
+    background: #f39c12;
+    color: white;
+}
+
+.badge-info {
+    background: #3498db;
+    color: white;
+}
+
+/* QUICK START */
+.replanta-god-quick-start {
+    background: #fffbeb;
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.replanta-god-quick-start h3 {
+    margin-top: 0;
+    color: #d97706;
+}
+
+.replanta-god-quick-start ol {
+    margin: 0;
+    padding-left: 25px;
+}
+
+.replanta-god-quick-start li {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+/* SETTINGS */
+.replanta-god-settings {
+    animation: fadeIn 0.3s ease;
+}
+
+.replanta-god-section {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.replanta-god-section h3 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 18px;
+}
+
+.section-description {
+    margin: 0 0 20px 0;
+    color: #666;
+    font-size: 14px;
+    font-style: italic;
+}
+
+.replanta-god-divider {
+    height: 1px;
+    background: #e0e0e0;
+    margin: 25px 0;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: monospace;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input[type="radio"],
+.form-group input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.help-text {
+    margin: 5px 0 0 0;
+    font-size: 12px;
+    color: #999;
+    font-style: italic;
+}
+
+.required {
+    color: #e74c3c;
+}
+
+/* FORM ACTIONS */
+.form-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.form-actions .button {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-actions .button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.form-actions .button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.button-large {
+    font-size: 14px;
+    padding: 12px 20px;
+}
+
+.form-actions span {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.form-actions .success {
+    color: #27ae60;
+}
+
+.form-actions .error {
+    color: #e74c3c;
+}
+
+/* DETAILS */
+.replanta-god-details {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.replanta-god-details summary {
+    cursor: pointer;
+    font-weight: 500;
+    color: #667eea;
+    user-select: none;
+}
+
+.replanta-god-details summary:hover {
+    color: #764ba2;
+}
+
+.details-content {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.details-content h5 {
+    margin: 15px 0 5px 0;
+    font-size: 13px;
+    color: #333;
+}
+
+.details-content code {
+    display: block;
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    overflow-x: auto;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+}
+
+/* ORDERS TABLE */
+.replanta-god-toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+.replanta-god-toolbar label {
+    font-weight: 500;
+    margin: 0;
+}
+
+.replanta-god-toolbar select,
+.replanta-god-toolbar button {
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+.replanta-god-toolbar .button {
+    cursor: pointer;
+}
+
+#replanta_god_orders_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#replanta_god_orders_table thead {
+    background: #f0f0f0;
+}
+
+#replanta_god_orders_table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #ddd;
+}
+
+#replanta_god_orders_table td {
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#replanta_god_orders_table tbody tr:hover {
+    background: #f9f9f9;
+}
+
+#replanta_god_orders_table code {
+    background: #f0f0f0;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.replanta-god-pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.replanta-god-pagination .page-numbers {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0 3px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #667eea;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.replanta-god-pagination .page-numbers:hover,
+.replanta-god-pagination .page-numbers.current {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+/* LOGS */
+.replanta-god-logs {
+    animation: fadeIn 0.3s ease;
+}
+
+.replanta-god-logs table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.replanta-god-logs table th,
+.replanta-god-logs table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.replanta-god-logs table th {
+    background: #f0f0f0;
+    font-weight: 600;
+    border-bottom: 2px solid #ddd;
+}
+
+.replanta-god-logs table tbody tr:hover {
+    background: #f9f9f9;
+}
+
+/* ACTIONS */
+.replanta-god-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* MESSAGES */
+.replanta-message {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.replanta-message.success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.replanta-message.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .replanta-god-header {
+        padding: 20px;
+    }
+
+    .replanta-god-header h1 {
+        font-size: 20px;
+    }
+
+    .replanta-god-tabs {
+        flex-wrap: wrap;
+    }
+
+    .replanta-god-tab {
+        flex: 1 1 50%;
+    }
+
+    .replanta-god-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .replanta-god-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .replanta-god-toolbar select,
+    .replanta-god-toolbar button {
+        width: 100%;
+    }
+
+    #replanta_god_orders_table {
+        font-size: 13px;
+    }
+
+    #replanta_god_orders_table td,
+    #replanta_god_orders_table th {
+        padding: 8px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-actions .button,
+    .form-actions select {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .replanta-god-container {
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .replanta-god-header {
+        padding: 15px;
+    }
+
+    .replanta-god-content {
+        padding: 15px;
+    }
+
+    .replanta-god-section {
+        padding: 15px;
+    }
+
+    .replanta-god-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .replanta-god-tab {
+        flex: 1 1 100%;
+        font-size: 12px;
+        padding: 12px 10px;
+    }
+}

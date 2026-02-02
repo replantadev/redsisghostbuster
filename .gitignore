@@ -1,0 +1,38 @@
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Development
+node_modules/
+vendor/
+*.log
+*.cache
+
+# Build
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Sensitive data
+.env
+.env.local
+config.local.php
+
+# Documentation build
+docs/_build/
+
+# Test artifacts
+coverage/
+.phpunit.result.cache
