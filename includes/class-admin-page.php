@@ -1,6 +1,6 @@
 <?php
 /**
- * Página de administración del plugin
+ * Pagina de administracion del plugin
  */
 
 class Replanta_Ghost_Orders_Admin_Page {
@@ -14,7 +14,7 @@ class Replanta_Ghost_Orders_Admin_Page {
         add_submenu_page(
             'woocommerce',
             'Replanta - Pedidos Fantasma',
-            '👻 Pedidos Fantasma',
+            'Pedidos Fantasma',
             'manage_woocommerce',
             'replanta-ghost-orders',
             [__CLASS__, 'render_page']
@@ -29,12 +29,12 @@ class Replanta_Ghost_Orders_Admin_Page {
         
         // Check de Cloudflare
         if (!Replanta_Ghost_Orders_Settings::get_option('cloudflare_api_key')) {
-            echo '<div class="notice notice-warning"><p>⚠️ <strong>Configura Cloudflare</strong> para permitir las notificaciones IPN de Redsys.</p></div>';
+            echo '<div class="notice notice-warning"><p><strong>Configura Cloudflare</strong> para permitir las notificaciones IPN de Redsys.</p></div>';
         }
         
         // Check de LSWC
         if (Replanta_Ghost_Orders_LSWC::is_lswc_active() && !Replanta_Ghost_Orders_Settings::get_option('lswc_auto_config')) {
-            echo '<div class="notice notice-warning"><p>⚠️ <strong>Configura LiteSpeed Cache</strong> para excluir URLs de Redsys.</p></div>';
+            echo '<div class="notice notice-warning"><p><strong>Configura LiteSpeed Cache</strong> para excluir URLs de Redsys.</p></div>';
         }
     }
     
@@ -42,7 +42,7 @@ class Replanta_Ghost_Orders_Admin_Page {
         ?>
         <div class="replanta-god-container">
             <div class="replanta-god-header">
-                <h1>👻 Replanta - Detector de Pedidos Fantasma</h1>
+                <h1>Replanta - Detector de Pedidos Fantasma</h1>
                 <p class="subtitle">Sistema inteligente para detectar y corregir pedidos pagados en Redsys pero cancelados en WooCommerce</p>
             </div>
             
@@ -55,7 +55,7 @@ class Replanta_Ghost_Orders_Admin_Page {
         $tab = sanitize_text_field($_GET['tab'] ?? 'dashboard');
         $tabs = [
             'dashboard' => 'Dashboard',
-            'settings' => 'Configuración',
+            'settings' => 'Configuracion',
             'orders' => 'Pedidos Fantasma',
             'logs' => 'Registros',
         ];
@@ -102,64 +102,64 @@ class Replanta_Ghost_Orders_Admin_Page {
                 <div class="stat-box">
                     <h3>Pedidos Fantasma</h3>
                     <p class="stat-number"><?php echo $ghost_count; ?></p>
-                    <p class="stat-subtitle">Últimos 7 días</p>
+                    <p class="stat-subtitle">Ultimos 7 dias</p>
                 </div>
                 
                 <div class="stat-box">
                     <h3>Eventos Registrados</h3>
                     <p class="stat-number"><?php echo $stats['total']; ?></p>
-                    <p class="stat-subtitle">Últimos 30 días</p>
+                    <p class="stat-subtitle">Ultimos 30 dias</p>
                 </div>
                 
                 <div class="stat-box <?php echo $cf_configured ? 'ok' : 'warning'; ?>">
                     <h3>Cloudflare</h3>
-                    <p class="stat-number"><?php echo $cf_configured ? '✅' : '❌'; ?></p>
+                    <p class="stat-number"><?php echo $cf_configured ? 'OK' : 'X'; ?></p>
                     <p class="stat-subtitle"><?php echo $cf_configured ? 'Configurado' : 'No configurado'; ?></p>
                 </div>
                 
                 <div class="stat-box <?php echo $lswc_active ? 'ok' : 'info'; ?>">
                     <h3>LiteSpeed Cache</h3>
-                    <p class="stat-number"><?php echo $lswc_active ? '✅' : 'ℹ️'; ?></p>
+                    <p class="stat-number"><?php echo $lswc_active ? 'OK' : '-'; ?></p>
                     <p class="stat-subtitle"><?php echo $lswc_active ? 'Activo' : 'No instalado'; ?></p>
                 </div>
             </div>
             
             <div class="replanta-god-info-box">
-                <h3>📋 Estado del Sistema</h3>
+                <h3>Estado del Sistema</h3>
                 <ul>
                     <li>
-                        <strong>Modo de operación:</strong>
+                        <strong>Modo de operacion:</strong>
                         <?php
                         $mode = Replanta_Ghost_Orders_Settings::get_mode();
                         if ($mode === 'vigilant') {
                             echo '<span class="badge badge-info">Vigilante</span> (Detectar, no corregir)';
                         } else {
-                            echo '<span class="badge badge-warning">Automático</span> (Detectar y corregir)';
+                            echo '<span class="badge badge-warning">Automatico</span> (Detectar y corregir)';
                         }
                         ?>
                     </li>
                     <li>
-                        <strong>Detección activa:</strong>
+                        <strong>Deteccion activa:</strong>
                         <?php
                         echo Replanta_Ghost_Orders_Settings::get_option('detection_enabled') ?
-                            '<span class="badge badge-success">Sí</span>' :
+                            '<span class="badge badge-success">Si</span>' :
                             '<span class="badge badge-danger">No</span>';
                         ?>
                     </li>
                     <li>
-                        <strong>Próxima verificación:</strong>
+                        <strong>Proxima verificacion:</strong>
                         <?php echo date('d/m/Y H:i', wp_next_scheduled('replanta_god_check_ghost_orders')); ?>
                     </li>
                 </ul>
             </div>
             
             <div class="replanta-god-quick-start">
-                <h3>🚀 Inicio Rápido</h3>
+                <h3>Inicio Rapido</h3>
                 <ol>
-                    <li>Ve a <strong>Configuración</strong> e ingresa tus credenciales de Cloudflare</li>
-                    <li>Aplica las reglas automáticamente con los botones</li>
-                    <li>El sistema detectará pedidos fantasma automáticamente</li>
-                    <li>Procesarlos en lote desde la pestaña <strong>Pedidos Fantasma</strong></li>
+                    <li>Ve a <strong>Configuracion</strong> e ingresa tus credenciales de Cloudflare</li>
+                    <li>Aplica las reglas automaticamente con los botones</li>
+                    <li>El sistema detectara pedidos fantasma automaticamente</li>
+                    <li>Procesarlos en lote desde la pestana <strong>Pedidos Fantasma</strong></li>
                 </ol>
             </div>
         </div>
@@ -176,21 +176,21 @@ class Replanta_Ghost_Orders_Admin_Page {
             <div class="replanta-god-toolbar">
                 <label for="replanta_god_days">Buscar pedidos de:</label>
                 <select id="replanta_god_days">
-                    <option value="7">Últimos 7 días</option>
-                    <option value="14">Últimos 14 días</option>
-                    <option value="30" selected>Últimos 30 días</option>
-                    <option value="60">Últimos 60 días</option>
+                    <option value="7">Ultimos 7 dias</option>
+                    <option value="14">Ultimos 14 dias</option>
+                    <option value="30" selected>Ultimos 30 dias</option>
+                    <option value="60">Ultimos 60 dias</option>
                 </select>
                 
                 <button class="button button-primary" id="replanta_god_refresh_orders">
-                    🔄 Actualizar
+                    Actualizar
                 </button>
                 
                 <select id="replanta_god_bulk_action">
-                    <option value="">-- Acción en lote --</option>
-                    <option value="processing">✅ Marcar como Procesando</option>
-                    <option value="completed">📦 Marcar como Completado</option>
-                    <option value="on-hold">⏸️ Marcar como En espera</option>
+                    <option value="">-- Accion en lote --</option>
+                    <option value="processing">Marcar como Procesando</option>
+                    <option value="completed">Marcar como Completado</option>
+                    <option value="on-hold">Marcar como En espera</option>
                 </select>
                 
                 <button class="button button-secondary" id="replanta_god_apply_bulk">
@@ -207,7 +207,7 @@ class Replanta_Ghost_Orders_Admin_Page {
                         <th>Total</th>
                         <th>Fecha</th>
                         <th>Cliente</th>
-                        <th>Código Auth Redsys</th>
+                        <th>Codigo Auth Redsys</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -269,7 +269,7 @@ class Replanta_Ghost_Orders_Admin_Page {
             $('#replanta_god_apply_bulk').click(function() {
                 var action = $('#replanta_god_bulk_action').val();
                 if (!action) {
-                    alert('Selecciona una acción');
+                    alert('Selecciona una accion');
                     return;
                 }
                 
@@ -289,10 +289,10 @@ class Replanta_Ghost_Orders_Admin_Page {
                     status: action
                 }, function(response) {
                     if (response.success) {
-                        alert('✅ ' + response.data.message);
+                        alert(response.data.message);
                         loadGhostOrders();
                     } else {
-                        alert('❌ ' + response.data);
+                        alert('Error: ' + response.data);
                     }
                 });
             });
@@ -311,7 +311,7 @@ class Replanta_Ghost_Orders_Admin_Page {
         $stats = Replanta_Ghost_Orders_Logger::get_stats(30);
         ?>
         <div class="replanta-god-logs">
-            <h3>📊 Estadísticas de Eventos (30 días)</h3>
+            <h3>Estadisticas de Eventos (30 dias)</h3>
             <table class="widefat">
                 <tr>
                     <th>Tipo de Evento</th>

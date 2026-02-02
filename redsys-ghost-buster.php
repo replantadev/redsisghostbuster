@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Redsys Ghost Buster
  * Plugin URI: https://github.com/replantadev/redsisghostbuster
- * Description: Detecta y corrige pedidos fantasma pagados en Redsys pero cancelados en WooCommerce. Integración automática con Cloudflare y LiteSpeed Cache. Actualizaciones automáticas desde GitHub.
- * Version: 1.0.0
+ * Description: Detecta y corrige pedidos fantasma pagados en Redsys pero cancelados en WooCommerce. Integracion automatica con Cloudflare y LiteSpeed Cache. Actualizaciones automaticas desde GitHub.
+ * Version: 1.0.1
  * Author: Replanta
  * Author URI: https://replanta.es
  * License: GPL v2 or later
@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definir constantes del plugin
-define('REPLANTA_GOD_VERSION', '1.0.0');
+define('REPLANTA_GOD_VERSION', '1.0.1');
 define('REPLANTA_GOD_FILE', __FILE__);
 define('REPLANTA_GOD_DIR', plugin_dir_path(__FILE__));
 define('REPLANTA_GOD_URL', plugin_dir_url(__FILE__));
@@ -48,7 +48,7 @@ require_once REPLANTA_GOD_DIR . 'includes/class-detector.php';
 require_once REPLANTA_GOD_DIR . 'includes/class-admin-page.php';
 require_once REPLANTA_GOD_DIR . 'includes/class-github-updater.php';
 
-// Hook de activación
+// Hook de activacion
 register_activation_hook(__FILE__, 'replanta_god_activate');
 function replanta_god_activate() {
     // Crear tabla de logging
@@ -65,11 +65,11 @@ function replanta_god_activate() {
         ]);
     }
     
-    // Limpiar caché de updates para forzar verificación
+    // Limpiar cache de updates para forzar verificacion
     delete_transient('replanta_god_github_update');
 }
 
-// Hook de desactivación
+// Hook de desactivacion
 register_deactivation_hook(__FILE__, 'replanta_god_deactivate');
 function replanta_god_deactivate() {
     // Limpiar eventos programados
@@ -98,7 +98,7 @@ function replanta_god_init() {
 // Encolar estilos y scripts del admin
 add_action('admin_enqueue_scripts', 'replanta_god_enqueue_assets');
 function replanta_god_enqueue_assets($hook) {
-    // Solo en nuestras páginas
+    // Solo en nuestras paginas
     if (strpos($hook, 'replanta-ghost-orders') === false) {
         return;
     }
@@ -124,7 +124,7 @@ function replanta_god_enqueue_assets($hook) {
         'version' => REPLANTA_GOD_VERSION,
         'strings' => [
             'processing' => __('Procesando...', 'redsys-ghost-buster'),
-            'success' => __('¡Éxito!', 'redsys-ghost-buster'),
+            'success' => __('Exito!', 'redsys-ghost-buster'),
             'error' => __('Error', 'redsys-ghost-buster'),
         ],
     ]);
@@ -148,9 +148,9 @@ add_action('replanta_god_process_logs', function() {
     Replanta_Ghost_Orders_Logger::process_queue();
 });
 
-// Añadir enlace de configuración en la lista de plugins
+// Anadir enlace de configuracion en la lista de plugins
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), function($links) {
-    $settings_link = '<a href="' . admin_url('admin.php?page=replanta-ghost-orders') . '">' . __('Configuración', 'redsys-ghost-buster') . '</a>';
+    $settings_link = '<a href="' . admin_url('admin.php?page=replanta-ghost-orders') . '">' . __('Configuracion', 'redsys-ghost-buster') . '</a>';
     array_unshift($links, $settings_link);
     return $links;
 });
