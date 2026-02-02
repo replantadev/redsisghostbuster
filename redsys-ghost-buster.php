@@ -99,7 +99,7 @@ function replanta_god_init() {
 add_action('admin_enqueue_scripts', 'replanta_god_enqueue_assets');
 function replanta_god_enqueue_assets($hook) {
     // Solo en nuestras paginas
-    if (strpos($hook, 'replanta-ghost-orders') === false) {
+    if ($hook !== 'woocommerce_page_replanta-ghost-orders') {
         return;
     }
     
