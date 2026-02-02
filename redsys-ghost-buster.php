@@ -3,7 +3,7 @@
  * Plugin Name: Redsys Ghost Buster
  * Plugin URI: https://github.com/replantadev/redsisghostbuster
  * Description: Detecta y corrige pedidos fantasma pagados en Redsys pero cancelados en WooCommerce. Integracion automatica con Cloudflare y LiteSpeed Cache. Actualizaciones automaticas desde GitHub.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: Replanta
  * Author URI: https://replanta.es
  * License: GPL v2 or later
@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definir constantes del plugin
-define('REPLANTA_GOD_VERSION', '1.0.1');
+define('REPLANTA_GOD_VERSION', '1.0.2');
 define('REPLANTA_GOD_FILE', __FILE__);
 define('REPLANTA_GOD_DIR', plugin_dir_path(__FILE__));
 define('REPLANTA_GOD_URL', plugin_dir_url(__FILE__));
