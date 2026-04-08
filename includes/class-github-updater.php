@@ -162,6 +162,14 @@ class Replanta_Ghost_Orders_GitHub_Updater {
      */
     private function get_download_url($release) {
         if (!empty($release['assets'])) {
+            // Buscar específicamente el ZIP con nombre correcto (replanta-rgb-*.zip)
+            foreach ($release['assets'] as $asset) {
+                if (strpos($asset['name'], 'replanta-rgb-') !== false && strpos($asset['name'], '.zip') !== false) {
+                    return $asset['browser_download_url'];
+                }
+            }
+            
+            // Fallback: cualquier ZIP
             foreach ($release['assets'] as $asset) {
                 if (strpos($asset['name'], '.zip') !== false) {
                     return $asset['browser_download_url'];

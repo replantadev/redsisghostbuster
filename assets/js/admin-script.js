@@ -5,13 +5,21 @@
 (function($) {
     'use strict';
 
+    console.log('[Replanta GOD] Script cargado');
+    console.log('[Replanta GOD] jQuery version:', $.fn.jquery);
+    console.log('[Replanta GOD] ajaxurl existe:', typeof ajaxurl !== 'undefined', ajaxurl);
+    console.log('[Replanta GOD] repl_god_obj existe:', typeof repl_god_obj !== 'undefined', repl_god_obj);
+
     var ReplicaGOD = {
 
         init: function() {
+            console.log('[Replanta GOD] Inicializando...');
             this.attachEventHandlers();
+            console.log('[Replanta GOD] Event handlers attached');
         },
 
         attachEventHandlers: function() {
+            console.log('[Replanta GOD] Registrando event handlers...');
             $(document).on('click', '.replanta-god-tab', this.handleTabSwitch.bind(this));
             $(document).on('submit', '#replanta_god_settings_form', this.handleSettingsSave.bind(this));
             $(document).on('click', '#replanta_test_cf', this.testCloudflareConnection.bind(this));
@@ -23,6 +31,7 @@
             $(document).on('change', '#replanta_god_select_all', this.selectAllOrders.bind(this));
             $(document).on('click', '#replanta_test_order', this.testSpecificOrder.bind(this));
             $(document).on('click', '#replanta_check_updates', this.checkForUpdates.bind(this));
+            console.log('[Replanta GOD] Event handlers registrados OK');
         },
 
         handleTabSwitch: function(e) {
@@ -34,37 +43,48 @@
         },
 
         handleSettingsSave: function(e) {
+            console.log('[Replanta GOD] handleSettingsSave LLAMADO');
             e.preventDefault();
 
             var $form = $(e.target);
             var $submit = $form.find('button[type="submit"]');
             var originalText = $submit.text();
 
+            console.log('[Replanta GOD] Formulario:', $form);
+            console.log('[Replanta GOD] Submit button:', $submit);
+
             $submit.prop('disabled', true).text('Guardando...');
+
+            var postData = {
+                action: 'replanta_god_save_settings',
+                nonce: repl_god_obj.nonce,
+                cloudflare_api_key: $('#cloudflare_api_key').val(),
+                cloudflare_email: $('#cloudflare_email').val(),
+                cloudflare_zone_id: $('#cloudflare_zone_id').val(),
+                replanta_mode: $('input[name="replanta_mode"]:checked').val(),
+                detection_enabled: $('input[name="detection_enabled"]').is(':checked') ? 1 : 0
+            };
+
+            console.log('[Replanta GOD] Enviando datos:', postData);
 
             $.ajax({
                 url: ajaxurl,
                 type: 'POST',
-                data: {
-                    action: 'replanta_god_save_settings',
-                    nonce: repl_god_obj.nonce,
-                    cloudflare_api_key: $('#cloudflare_api_key').val(),
-                    cloudflare_email: $('#cloudflare_email').val(),
-                    cloudflare_zone_id: $('#cloudflare_zone_id').val(),
-                    replanta_mode: $('input[name="replanta_mode"]:checked').val(),
-                    detection_enabled: $('input[name="detection_enabled"]').is(':checked') ? 1 : 0
-                },
+                data: postData,
                 success: function(response) {
+                    console.log('[Replanta GOD] AJAX success:', response);
                     if (response.success) {
                         ReplicaGOD.showMessage('Configuracion guardada correctamente', 'success', $form);
                     } else {
                         ReplicaGOD.showMessage('Error: ' + response.data, 'error', $form);
                     }
                 },
-                error: function() {
+                error: function(xhr, status, error) {
+                    console.error('[Replanta GOD] AJAX error:', xhr, status, error);
                     ReplicaGOD.showMessage('Error de conexion', 'error', $form);
                 },
                 complete: function() {
+                    console.log('[Replanta GOD] AJAX complete');
                     $submit.prop('disabled', false).text(originalText);
                 }
             });
@@ -553,8 +573,16 @@
         }
     };
 
+    console.log('[Replanta GOD] Esperando document.ready...');
     $(document).ready(function() {
-        ReplicaGOD.init();
+        console.log('[Replanta GOD] Document.ready fired!');
+        try {
+            ReplicaGOD.init();
+            console.log('[Replanta GOD] Inicialización completada exitosamente');
+        } catch(error) {
+            console.error('[Replanta GOD] ERROR en inicialización:', error);
+            console.error('[Replanta GOD] Stack trace:', error.stack);
+        }
     });
 
 })(jQuery);

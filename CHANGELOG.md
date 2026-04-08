@@ -2,6 +2,17 @@
 
 Todos los cambios notables en este proyecto se documentan en este archivo.
 
+## [1.2.4] - 2026-04-08
+
+### Fixed
+- **CRÍTICO**: Nombre del ZIP corregido a `replanta-rgb-*.zip` para coincidir con carpeta instalada
+- Sistema de actualizaciones ahora busca el ZIP con nombre correcto
+- Estructura del ZIP ahora incluye carpeta raíz `replanta-rgb/`
+
+### Technical
+- Actualizador de GitHub prioriza ZIPs con nombre `replanta-rgb-*.zip`
+- Comando git archive ahora usa `--prefix=replanta-rgb/` para estructura correcta
+
 ## [1.2.3] - 2026-04-08
 
 ### Added
