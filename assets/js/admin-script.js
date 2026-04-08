@@ -20,7 +20,8 @@
 
         attachEventHandlers: function() {
             console.log('[Replanta GOD] Registrando event handlers...');
-            $(document).on('click', '.replanta-god-tab', this.handleTabSwitch.bind(this));
+            // REMOVED: Tab switching - let browser handle navigation naturally
+            // $(document).on('click', '.replanta-god-tab', this.handleTabSwitch.bind(this));
             $(document).on('submit', '#replanta_god_settings_form', this.handleSettingsSave.bind(this));
             $(document).on('click', '#replanta_test_cf', this.testCloudflareConnection.bind(this));
             $(document).on('click', '#replanta_apply_cf_rules', this.applyCloudflareRules.bind(this));
@@ -34,13 +35,7 @@
             console.log('[Replanta GOD] Event handlers registrados OK');
         },
 
-        handleTabSwitch: function(e) {
-            if (e.preventDefault) e.preventDefault();
-            var tab = $(e.target).data('tab') || $(e.target).attr('href').split('tab=')[1];
-            if (!tab) return false;
-            window.location.hash = 'tab=' + tab;
-            return false;
-        },
+        // REMOVED: handleTabSwitch - tabs now work with normal page navigation
 
         handleSettingsSave: function(e) {
             console.log('[Replanta GOD] handleSettingsSave LLAMADO');
