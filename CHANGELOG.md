@@ -43,3 +43,8 @@ Todos los cambios notables en este proyecto se documentan en este archivo.
 - README completo con instrucciones de instalacion
 - Guia de inicio rapido
 - Documentacion tecnica
+## [1.2.1] - 2026-04-08
+
+### Corregido
+- Campo de email de Cloudflare se guarda correctamente en sanitize_settings
+
