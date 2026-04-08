@@ -2,6 +2,31 @@
 
 Todos los cambios notables en este proyecto se documentan en este archivo.
 
+## [1.2.2] - 2026-04-08
+
+### Fixed
+- **CRÍTICO**: Corregido error fatal en página de configuración que impedía acceder al plugin
+- Eliminadas llamadas a métodos inexistentes `save_from_post()` y `get_all()` en settings-form.php
+- Formulario ahora usa AJAX correctamente en lugar de POST tradicional
+- Agregado botón "Probar Conexión" para verificar credenciales de Cloudflare
+- Corregidos IDs de botones para aplicar reglas de Cloudflare y LSWC
+
+## [1.2.1] - 2026-04-08
+
+### Fixed
+- Campo de email de Cloudflare ahora se guarda correctamente en sanitize_settings()
+- Agregada funcionalidad de test por pedido específico en la configuración
+
+## [1.2.0] - 2026-04-08
+
+### Added
+- Campo de email de Cloudflare para autenticación con Global API Key
+- Soporte dual para autenticación: API Token (recomendado) o Global API Key + Email
+- Vista detallada del estado de Redsys para pedidos individuales
+
+### Fixed
+- Autenticación de Cloudflare API ahora soporta ambos métodos (Token y Key+Email)
+
 ## [1.0.3] - 2026-04-08
 
 ### Agregado

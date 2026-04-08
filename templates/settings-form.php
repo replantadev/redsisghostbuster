@@ -3,40 +3,12 @@
  * Template del formulario de configuracion
  */
 
-// Procesar guardado
-if (isset($_POST['replanta_god_save_settings']) && wp_verify_nonce($_POST['_wpnonce'], 'replanta_god_settings')) {
-    Replanta_Ghost_Orders_Settings::save_from_post($_POST);
-    echo '<div class="notice notice-success"><p>Configuracion guardada correctamente.</p></div>';
-}
-
-// Procesar aplicar reglas Cloudflare
-if (isset($_POST['replanta_god_apply_cf_rules']) && wp_verify_nonce($_POST['_wpnonce'], 'replanta_god_settings')) {
-    $cf_api = new Replanta_Ghost_Orders_Cloudflare_API();
-    $result = $cf_api->apply_redsys_rules();
-    
-    if (is_wp_error($result)) {
-        echo '<div class="notice notice-error"><p>Error: ' . esc_html($result->get_error_message()) . '</p></div>';
-    } else {
-        echo '<div class="notice notice-success"><p>Reglas de Cloudflare aplicadas correctamente.</p></div>';
-    }
-}
-
-// Procesar aplicar LSWC
-if (isset($_POST['replanta_god_apply_lswc']) && wp_verify_nonce($_POST['_wpnonce'], 'replanta_god_settings')) {
-    $result = Replanta_Ghost_Orders_LSWC::apply_exclusion_rules();
-    
-    if (is_wp_error($result)) {
-        echo '<div class="notice notice-error"><p>Error: ' . esc_html($result->get_error_message()) . '</p></div>';
-    } else {
-        echo '<div class="notice notice-success"><p>Reglas de LiteSpeed Cache aplicadas correctamente.</p></div>';
-    }
-}
-
-$settings = Replanta_Ghost_Orders_Settings::get_all();
+// Obtener configuracion actual usando el metodo correcto
+$settings = Replanta_Ghost_Orders_Settings::get_option();
 ?>
 
 <div class="replanta-god-settings">
-    <form method="post">
+    <form id="replanta_god_settings_form" method="post">
         <?php wp_nonce_field('replanta_god_settings'); ?>
         
         <div class="settings-section">
@@ -115,13 +87,23 @@ $settings = Replanta_Ghost_Orders_Settings::get_all();
                         <p class="description">ID de la zona de Cloudflare para tu dominio</p>
                     </td>
                 </tr>
+                
+                <tr>
+                    <th><label>Test de Conexión</label></th>
+                    <td>
+                        <button type="button" id="replanta_test_cf" class="button button-secondary">Probar Conexión</button>
+                        <p class="description">Verifica que las credenciales de Cloudflare funcionan correctamente</p>
+                        <div id="replanta_test_cf_result" style="margin-top: 10px;"></div>
+                    </td>
+                </tr>
             </table>
             
             <p>
-                <button type="submit" name="replanta_god_apply_cf_rules" class="button button-primary">
+                <button type="button" id="replanta_apply_cf_rules" class="button button-primary">
                     Aplicar Reglas
                 </button>
                 <span class="description">Crea una regla WAF para omitir Browser Integrity Check en IPNs de Redsys</span>
+                <div id="replanta_cf_result" style="margin-top: 10px;"></div>
             </p>
         </div>
         
@@ -143,10 +125,11 @@ $settings = Replanta_Ghost_Orders_Settings::get_all();
             </table>
             
             <p>
-                <button type="submit" name="replanta_god_apply_lswc" class="button button-primary">
+                <button type="button" id="replanta_apply_lswc_rules" class="button button-primary">
                     Aplicar Exclusiones
                 </button>
                 <span class="description">Anade exclusiones de cache para las URLs de Redsys</span>
+                <div id="replanta_lswc_result" style="margin-top: 10px;"></div>
             </p>
         </div>
         <?php endif; ?>
@@ -185,7 +168,7 @@ $settings = Replanta_Ghost_Orders_Settings::get_all();
         </div>
         
         <p class="submit">
-            <button type="submit" name="replanta_god_save_settings" class="button button-primary button-large">
+            <button type="submit" class="button button-primary button-large">
                 Guardar Configuracion
             </button>
         </p>
