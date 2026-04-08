@@ -44,11 +44,22 @@ class Replanta_Ghost_Orders_Cloudflare_API {
         
         $url = self::$api_url . $endpoint;
         
-        $headers = [
-            'X-Auth-Key' => $creds['api_key'],
-            'X-Auth-Email' => get_option('admin_email'),
-            'Content-Type' => 'application/json',
-        ];
+        // Soportar ambos metodos de autenticacion
+        $email = Replanta_Ghost_Orders_Settings::get_option('cloudflare_email');
+        if (!empty($email)) {
+            // Global API Key + Email
+            $headers = [
+                'X-Auth-Key' => $creds['api_key'],
+                'X-Auth-Email' => $email,
+                'Content-Type' => 'application/json',
+            ];
+        } else {
+            // API Token (recomendado)
+            $headers = [
+                'Authorization' => 'Bearer ' . $creds['api_key'],
+                'Content-Type' => 'application/json',
+            ];
+        }
         
         $args = [
             'method' => $method,
@@ -193,6 +204,7 @@ class Replanta_Ghost_Orders_Cloudflare_API {
         }
         
         $api_key = sanitize_text_field($_POST['api_key'] ?? '');
+        $email = sanitize_email($_POST['email'] ?? '');
         $zone_id = sanitize_text_field($_POST['zone_id'] ?? '');
         
         if (empty($api_key) || empty($zone_id)) {
@@ -201,9 +213,11 @@ class Replanta_Ghost_Orders_Cloudflare_API {
         
         // Guardar temporalmente para la prueba
         $original_key = Replanta_Ghost_Orders_Settings::get_option('cloudflare_api_key');
+        $original_email = Replanta_Ghost_Orders_Settings::get_option('cloudflare_email');
         $original_zone = Replanta_Ghost_Orders_Settings::get_option('cloudflare_zone_id');
         
         Replanta_Ghost_Orders_Settings::update_option('cloudflare_api_key', $api_key);
+        Replanta_Ghost_Orders_Settings::update_option('cloudflare_email', $email);
         Replanta_Ghost_Orders_Settings::update_option('cloudflare_zone_id', $zone_id);
         
         $test = self::test_connection();
@@ -211,6 +225,7 @@ class Replanta_Ghost_Orders_Cloudflare_API {
         // Restaurar si falla
         if (!$test) {
             Replanta_Ghost_Orders_Settings::update_option('cloudflare_api_key', $original_key);
+            Replanta_Ghost_Orders_Settings::update_option('cloudflare_email', $original_email);
             Replanta_Ghost_Orders_Settings::update_option('cloudflare_zone_id', $original_zone);
             wp_send_json_error('Error de conexión con Cloudflare');
         }

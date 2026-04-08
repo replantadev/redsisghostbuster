@@ -21,6 +21,7 @@
             $(document).on('click', '#replanta_god_apply_bulk', this.applyBulkAction.bind(this));
             $(document).on('click', '.replanta-sync-order', this.syncOrder.bind(this));
             $(document).on('change', '#replanta_god_select_all', this.selectAllOrders.bind(this));
+            $(document).on('click', '#replanta_test_order', this.testSpecificOrder.bind(this));
         },
 
         handleTabSwitch: function(e) {
@@ -46,8 +47,9 @@
                 data: {
                     action: 'replanta_god_save_settings',
                     nonce: repl_god_obj.nonce,
-                    cloudflare_api_key: $('#replanta_cf_api_key').val(),
-                    cloudflare_zone_id: $('#replanta_cf_zone').val(),
+                    cloudflare_api_key: $('#cloudflare_api_key').val(),
+                    cloudflare_email: $('#cloudflare_email').val(),
+                    cloudflare_zone_id: $('#cloudflare_zone_id').val(),
                     replanta_mode: $('input[name="replanta_mode"]:checked').val(),
                     detection_enabled: $('input[name="detection_enabled"]').is(':checked') ? 1 : 0
                 },
@@ -70,8 +72,9 @@
         testCloudflareConnection: function(e) {
             e.preventDefault();
 
-            var apiKey = $('#replanta_cf_api_key').val();
-            var zoneId = $('#replanta_cf_zone').val();
+            var apiKey = $('#cloudflare_api_key').val();
+            var email = $('#cloudflare_email').val();
+            var zoneId = $('#cloudflare_zone_id').val();
 
             if (!apiKey || !zoneId) {
                 this.showMessage('Completa los campos de API Key y Zone ID', 'error', '#replanta_test_cf_result');
@@ -90,6 +93,7 @@
                     action: 'replanta_god_test_cf',
                     nonce: repl_god_obj.nonce,
                     api_key: apiKey,
+                    email: email,
                     zone_id: zoneId
                 },
                 success: function(response) {
@@ -383,6 +387,87 @@
                 error: function() {
                     alert('[ERROR] Error de conexion');
                     $link.text(originalText);
+                }
+            });
+        },
+
+        testSpecificOrder: function(e) {
+            e.preventDefault();
+
+            var orderId = $('#test_order_id').val();
+            
+            if (!orderId) {
+                $('#test_order_result').html('<div style="color: #dc3232; padding: 10px; background: #fef0f0; border-left: 4px solid #dc3232; margin-top: 10px;">' +
+                    '<strong>Error:</strong> Ingresa un ID de pedido válido' +
+                    '</div>');
+                return;
+            }
+
+            var $btn = $(e.target);
+            var originalText = $btn.text();
+            $btn.prop('disabled', true).text('Probando...');
+            var $result = $('#test_order_result');
+            
+            $result.html('<div style="padding: 10px; background: #f0f0f1; border-left: 4px solid #72aee6;">Verificando pedido #' + orderId + '...</div>');
+
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'replanta_god_sync_order',
+                    nonce: repl_god_obj.nonce,
+                    order_id: orderId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var data = response.data;
+                        var isGhost = data.is_ghost;
+                        var redsysData = data.redsys_data;
+                        var status = data.status;
+                        
+                        var resultHtml = '<div style="padding: 15px; border-left: 4px solid ' + (isGhost ? '#dc3232' : '#46b450') + '; background: ' + (isGhost ? '#fef0f0' : '#f0f6f0') + '; margin-top: 10px;">';
+                        resultHtml += '<strong>Resultado del Test - Pedido #' + orderId + '</strong><br><br>';
+                        resultHtml += '<strong>Estado actual:</strong> ' + status + '<br>';
+                        resultHtml += '<strong>¿Es pedido fantasma?:</strong> ' + (isGhost ? '⚠️ SÍ - REQUIERE ATENCIÓN' : '✅ NO') + '<br><br>';
+                        
+                        if (redsysData.is_authorized) {
+                            resultHtml += '<strong>Estado en Redsys:</strong> ✅ AUTORIZADO<br>';
+                            if (redsysData.auth_code) {
+                                resultHtml += '<strong>Código de autorización:</strong> <code>' + redsysData.auth_code + '</code><br>';
+                            }
+                            if (redsysData.ds_response) {
+                                resultHtml += '<strong>Ds_Response:</strong> <code>' + redsysData.ds_response + '</code><br>';
+                            }
+                            if (redsysData.transaction_id) {
+                                resultHtml += '<strong>Transaction ID:</strong> <code>' + redsysData.transaction_id + '</code><br>';
+                            }
+                            if (redsysData.sources && redsysData.sources.length > 0) {
+                                resultHtml += '<strong>Fuente de datos:</strong> ' + redsysData.sources.join(', ') + '<br>';
+                            }
+                        } else {
+                            resultHtml += '<strong>Estado en Redsys:</strong> ❌ NO AUTORIZADO / SIN DATOS<br>';
+                        }
+                        
+                        if (isGhost) {
+                            resultHtml += '<br><strong>⚠️ ACCIÓN NECESARIA:</strong> Este pedido está pagado en Redsys pero marcado como "' + status + '" en WooCommerce.<br>';
+                            resultHtml += 'Se recomienda cambiar el estado a "processing" o "completed" manualmente.';
+                        }
+                        
+                        resultHtml += '</div>';
+                        $result.html(resultHtml);
+                    } else {
+                        $result.html('<div style="color: #dc3232; padding: 10px; background: #fef0f0; border-left: 4px solid #dc3232; margin-top: 10px;">' +
+                            '<strong>Error:</strong> ' + response.data +
+                            '</div>');
+                    }
+                },
+                error: function() {
+                    $result.html('<div style="color: #dc3232; padding: 10px; background: #fef0f0; border-left: 4px solid #dc3232; margin-top: 10px;">' +
+                        '<strong>Error:</strong> Error de conexión con el servidor' +
+                        '</div>');
+                },
+                complete: function() {
+                    $btn.prop('disabled', false).text(originalText);
                 }
             });
         },

@@ -93,10 +93,18 @@ $settings = Replanta_Ghost_Orders_Settings::get_all();
             
             <table class="form-table">
                 <tr>
-                    <th><label for="cloudflare_api_key">API Token</label></th>
+                    <th><label for="cloudflare_api_key">API Token / Global API Key</label></th>
                     <td>
                         <input type="password" name="cloudflare_api_key" id="cloudflare_api_key" value="<?php echo esc_attr($settings['cloudflare_api_key']); ?>" class="regular-text">
-                        <p class="description">Token con permisos de edicion de reglas WAF</p>
+                        <p class="description">API Token (recomendado) o Global API Key</p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th><label for="cloudflare_email">Email de Cloudflare</label></th>
+                    <td>
+                        <input type="email" name="cloudflare_email" id="cloudflare_email" value="<?php echo esc_attr($settings['cloudflare_email']); ?>" class="regular-text">
+                        <p class="description">Solo necesario si usas Global API Key (dejar vacio si usas API Token)</p>
                     </td>
                 </tr>
                 
@@ -142,6 +150,23 @@ $settings = Replanta_Ghost_Orders_Settings::get_all();
             </p>
         </div>
         <?php endif; ?>
+        
+        <div class="settings-section">
+            <h2>Test de Pedido Específico</h2>
+            <p class="description">Verifica si un pedido específico es un pedido fantasma (pagado en Redsys pero cancelado/pendiente).</p>
+            
+            <table class="form-table">
+                <tr>
+                    <th><label for="test_order_id">ID del Pedido</label></th>
+                    <td>
+                        <input type="number" id="test_order_id" class="regular-text" placeholder="Ej: 47632">
+                        <button type="button" id="replanta_test_order" class="button button-secondary">Probar Pedido</button>
+                        <p class="description">Ingresa el ID del pedido a verificar</p>
+                        <div id="test_order_result" style="margin-top: 10px;"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
         
         <div class="settings-section">
             <h2>Actualizaciones</h2>

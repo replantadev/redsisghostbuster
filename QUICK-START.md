@@ -15,6 +15,8 @@
 
 ## Configuracion de Cloudflare
 
+### Metodo 1: API Token (Recomendado)
+
 1. **Obtener credenciales**
    - Inicia sesion en Cloudflare Dashboard
    - Ve a tu dominio > Overview > API
@@ -23,8 +25,38 @@
 
 2. **Configurar en el plugin**
    - Ve a Configuracion
-   - Ingresa el API Token y Zone ID
+   - Ingresa el API Token (campo 1)
+   - Deja el Email vacio
+   - Ingresa el Zone ID
    - Haz clic en "Aplicar Reglas"
+
+### Metodo 2: Global API Key + Email
+
+1. **Obtener credenciales**
+   - Inicia sesion en Cloudflare Dashboard
+   - Ve a Perfil > API Tokens > Global API Key
+   - Copia la Global API Key
+   - Anota tu email de Cloudflare
+   - Copia el Zone ID de tu dominio
+
+2. **Configurar en el plugin**
+   - Ve a Configuracion
+   - Ingresa la Global API Key (campo 1)
+   - Ingresa tu email de Cloudflare (campo 2)
+   - Ingresa el Zone ID
+   - Haz clic en "Aplicar Reglas"
+
+## Test de Pedido Especifico
+
+1. **Verificar un pedido individual**
+   - Ve a Configuracion > Test de Pedido Especifico
+   - Ingresa el ID del pedido (ej: 47632)
+   - Haz clic en "Probar Pedido"
+   - Revisa el resultado detallado que muestra:
+     - Estado actual del pedido
+     - Si es un pedido fantasma
+     - Codigo de autorizacion de Redsys
+     - Datos de transaccion
 
 ## Uso Basico
 

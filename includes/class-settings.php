@@ -13,6 +13,7 @@ class Replanta_Ghost_Orders_Settings {
         'lswc_auto_config' => false,
         'cloudflare_auto_config' => false,
         'cloudflare_api_key' => '',
+        'cloudflare_email' => '',
         'cloudflare_zone_id' => '',
         'days_back' => 30,
         'auto_process_orders' => false,
@@ -33,6 +34,7 @@ class Replanta_Ghost_Orders_Settings {
         
         $settings = [
             'cloudflare_api_key' => sanitize_text_field($_POST['cloudflare_api_key'] ?? ''),
+            'cloudflare_email' => sanitize_email($_POST['cloudflare_email'] ?? ''),
             'cloudflare_zone_id' => sanitize_text_field($_POST['cloudflare_zone_id'] ?? ''),
             'mode' => sanitize_text_field($_POST['replanta_mode'] ?? 'vigilant'),
             'detection_enabled' => !empty($_POST['detection_enabled']),
@@ -92,6 +94,7 @@ class Replanta_Ghost_Orders_Settings {
             'lswc_auto_config' => !empty($settings['lswc_auto_config']),
             'cloudflare_auto_config' => !empty($settings['cloudflare_auto_config']),
             'cloudflare_api_key' => sanitize_text_field($settings['cloudflare_api_key'] ?? ''),
+            'cloudflare_email' => sanitize_email($settings['cloudflare_email'] ?? ''),
             'cloudflare_zone_id' => sanitize_text_field($settings['cloudflare_zone_id'] ?? ''),
             'days_back' => absint($settings['days_back'] ?? 30),
             'auto_process_orders' => !empty($settings['auto_process_orders']),
