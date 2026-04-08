@@ -155,14 +155,54 @@ $settings = Replanta_Ghost_Orders_Settings::get_option();
             <h2>Actualizaciones</h2>
             <p class="description">El plugin se actualiza automaticamente desde GitHub.</p>
             
+            <?php
+            // Verificar si hay actualizaciones disponibles
+            $update_cache_key = 'replanta_god_github_update';
+            $release_info = get_transient($update_cache_key);
+            $has_update = false;
+            $new_version = '';
+            
+            if ($release_info && isset($release_info['version'])) {
+                $new_version = $release_info['version'];
+                $has_update = version_compare($new_version, REPLANTA_GOD_VERSION, '>');
+            }
+            ?>
+            
             <table class="form-table">
                 <tr>
                     <th>Version actual</th>
-                    <td><code><?php echo REPLANTA_GOD_VERSION; ?></code></td>
+                    <td>
+                        <code><?php echo REPLANTA_GOD_VERSION; ?></code>
+                        <?php if ($has_update): ?>
+                            <span style="color: #d63638; font-weight: bold; margin-left: 10px;">
+                                Nueva version disponible: <?php echo esc_html($new_version); ?>
+                            </span>
+                        <?php endif; ?>
+                    </td>
                 </tr>
                 <tr>
                     <th>Repositorio</th>
-                    <td><a href="https://github.com/replantadev/redsisghostbuster" target="_blank">github.com/replantadev/redsisghostbuster</a></td>
+                    <td>
+                        <a href="https://github.com/replantadev/redsisghostbuster" target="_blank">github.com/replantadev/redsisghostbuster</a>
+                        <br>
+                        <a href="https://github.com/replantadev/redsisghostbuster/releases" target="_blank">Ver releases</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Comprobar actualizaciones</th>
+                    <td>
+                        <button type="button" id="replanta_check_updates" class="button button-secondary">Comprobar ahora</button>
+                        <p class="description">Fuerza la comprobacion de nuevas versiones en GitHub</p>
+                        <div id="replanta_check_updates_result" style="margin-top: 10px;"></div>
+                        
+                        <?php if ($has_update): ?>
+                            <p style="margin-top: 15px;">
+                                <a href="<?php echo admin_url('update-core.php'); ?>" class="button button-primary">
+                                    Ir a Actualizaciones
+                                </a>
+                            </p>
+                        <?php endif; ?>
+                    </td>
                 </tr>
             </table>
         </div>

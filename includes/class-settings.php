@@ -23,6 +23,7 @@ class Replanta_Ghost_Orders_Settings {
     public static function init() {
         add_action('admin_init', [__CLASS__, 'register_settings']);
         add_action('wp_ajax_replanta_god_save_settings', [__CLASS__, 'ajax_save_settings']);
+        add_action('wp_ajax_replanta_god_check_updates', [__CLASS__, 'ajax_check_updates']);
     }
     
     public static function ajax_save_settings() {
@@ -54,6 +55,43 @@ class Replanta_Ghost_Orders_Settings {
         );
         
         wp_send_json_success('Configuración guardada');
+    }
+    
+    public static function ajax_check_updates() {
+        check_ajax_referer('replanta_god_nonce', 'nonce');
+        
+        if (!current_user_can('manage_woocommerce')) {
+            wp_send_json_error('No autorizado');
+        }
+        
+        // Limpiar cache de actualizaciones para forzar comprobacion
+        delete_transient('replanta_god_github_update');
+        
+        // Forzar verificacion de actualizaciones de WordPress
+        wp_clean_plugins_cache();
+        wp_update_plugins();
+        
+        // Esperar un momento para que WordPress verifique
+        sleep(2);
+        
+        // Verificar si hay actualizacion disponible
+        $current_version = REPLANTA_GOD_VERSION;
+        $release_info = get_transient('replanta_god_github_update');
+        
+        $has_update = false;
+        $new_version = $current_version;
+        
+        if ($release_info && isset($release_info['version'])) {
+            $new_version = $release_info['version'];
+            $has_update = version_compare($new_version, $current_version, '>');
+        }
+        
+        wp_send_json_success([
+            'has_update' => $has_update,
+            'current_version' => $current_version,
+            'new_version' => $new_version,
+            'update_url' => admin_url('update-core.php')
+        ]);
     }
     
     public static function register_settings() {

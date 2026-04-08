@@ -2,6 +2,18 @@
 
 Todos los cambios notables en este proyecto se documentan en este archivo.
 
+## [1.2.3] - 2026-04-08
+
+### Added
+- Botón "Comprobar actualizaciones" en la página de configuración
+- Verificación manual de nuevas versiones desde GitHub
+- Detección visual de actualizaciones disponibles
+- Link directo a página de actualizaciones de WordPress
+
+### Improved
+- Interfaz de actualizaciones muestra versión actual y disponible
+- Forzado de limpieza de cache para detectar actualizaciones inmediatamente
+
 ## [1.2.2] - 2026-04-08
 
 ### Fixed

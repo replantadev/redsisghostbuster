@@ -22,6 +22,7 @@
             $(document).on('click', '.replanta-sync-order', this.syncOrder.bind(this));
             $(document).on('change', '#replanta_god_select_all', this.selectAllOrders.bind(this));
             $(document).on('click', '#replanta_test_order', this.testSpecificOrder.bind(this));
+            $(document).on('click', '#replanta_check_updates', this.checkForUpdates.bind(this));
         },
 
         handleTabSwitch: function(e) {
@@ -464,6 +465,69 @@
                 error: function() {
                     $result.html('<div style="color: #dc3232; padding: 10px; background: #fef0f0; border-left: 4px solid #dc3232; margin-top: 10px;">' +
                         '<strong>Error:</strong> Error de conexión con el servidor' +
+                        '</div>');
+                },
+                complete: function() {
+                    $btn.prop('disabled', false).text(originalText);
+                }
+            });
+        },
+
+        checkForUpdates: function(e) {
+            e.preventDefault();
+
+            var $btn = $(e.target);
+            var originalText = $btn.text();
+            $btn.prop('disabled', true).text('Comprobando...');
+            var $result = $('#replanta_check_updates_result');
+            
+            $result.html('<div style="padding: 10px; background: #f0f0f1; border-left: 4px solid #72aee6;">Comprobando actualizaciones en GitHub...</div>');
+
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'replanta_god_check_updates',
+                    nonce: repl_god_obj.nonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var data = response.data;
+                        var hasUpdate = data.has_update;
+                        var currentVersion = data.current_version;
+                        var newVersion = data.new_version;
+                        
+                        var resultHtml = '<div style="padding: 15px; border-left: 4px solid ' + (hasUpdate ? '#d63638' : '#46b450') + '; background: ' + (hasUpdate ? '#fef0f0' : '#f0f6f0') + '; margin-top: 10px;">';
+                        
+                        if (hasUpdate) {
+                            resultHtml += '<strong>🎉 Nueva versión disponible</strong><br><br>';
+                            resultHtml += '<strong>Versión actual:</strong> ' + currentVersion + '<br>';
+                            resultHtml += '<strong>Nueva versión:</strong> ' + newVersion + '<br><br>';
+                            resultHtml += '✅ WordPress ahora detectará la actualización.<br>';
+                            resultHtml += '<a href="' + data.update_url + '" class="button button-primary" style="margin-top: 10px;">Ir a Actualizaciones</a>';
+                        } else {
+                            resultHtml += '<strong>✅ Plugin actualizado</strong><br><br>';
+                            resultHtml += 'Versión actual: <strong>' + currentVersion + '</strong><br>';
+                            resultHtml += 'Estás usando la última versión disponible.';
+                        }
+                        
+                        resultHtml += '</div>';
+                        $result.html(resultHtml);
+                        
+                        if (hasUpdate) {
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 1500);
+                        }
+                    } else {
+                        $result.html('<div style="color: #dc3232; padding: 10px; background: #fef0f0; border-left: 4px solid #dc3232; margin-top: 10px;">' +
+                            '<strong>Error:</strong> ' + response.data +
+                            '</div>');
+                    }
+                },
+                error: function() {
+                    $result.html('<div style="color: #dc3232; padding: 10px; background: #fef0f0; border-left: 4px solid #dc3232; margin-top: 10px;">' +
+                        '<strong>Error:</strong> No se pudo conectar con GitHub. Verifica tu conexión.' +
                         '</div>');
                 },
                 complete: function() {
