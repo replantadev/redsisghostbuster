@@ -56,8 +56,11 @@
                 cloudflare_api_key: $('#cloudflare_api_key').val(),
                 cloudflare_email: $('#cloudflare_email').val(),
                 cloudflare_zone_id: $('#cloudflare_zone_id').val(),
-                replanta_mode: $('input[name="replanta_mode"]:checked').val(),
-                detection_enabled: $('input[name="detection_enabled"]').is(':checked') ? 1 : 0
+                mode: $('#mode').val(),
+                check_interval: $('#check_interval').val(),
+                detection_enabled: $('#detection_enabled').is(':checked') ? 1 : 0,
+                email_notifications: $('#email_notifications').is(':checked') ? 1 : 0,
+                lswc_auto_config: $('#lswc_auto_config').is(':checked') ? 1 : 0
             };
 
             console.log('[Replanta GOD] Enviando datos:', postData);
@@ -552,19 +555,25 @@
         },
 
         showMessage: function(message, type, container) {
-            var $container = $(container || '.replanta-god-container');
-            var $message = $('<div class="replanta-message replanta-message-' + type + '" style="margin-bottom: 15px;">' + message + '</div>');
-
-            if (container && container.startsWith('#')) {
+            var $container;
+            
+            // Si container es un string que empieza con #, es un ID específico para resultados
+            if (typeof container === 'string' && container.startsWith('#')) {
                 $(container).html(message);
-            } else {
-                $container.prepend($message);
-                setTimeout(function() {
-                    $message.fadeOut(300, function() {
-                        $(this).remove();
-                    });
-                }, 5000);
+                return;
             }
+            
+            // Si container es un objeto jQuery, usarlo directamente; si no, convertir o usar default
+            $container = container instanceof jQuery ? container : $(container || '.replanta-god-container');
+            
+            var $message = $('<div class="replanta-message replanta-message-' + type + '" style="margin-bottom: 15px;">' + message + '</div>');
+            $container.prepend($message);
+            
+            setTimeout(function() {
+                $message.fadeOut(300, function() {
+                    $(this).remove();
+                });
+            }, 5000);
         }
     };
 

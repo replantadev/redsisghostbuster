@@ -10,6 +10,8 @@ class Replanta_Ghost_Orders_Settings {
     private static $defaults = [
         'mode' => 'vigilant',
         'detection_enabled' => true,
+        'check_interval' => 'twicedaily',
+        'email_notifications' => false,
         'lswc_auto_config' => false,
         'cloudflare_auto_config' => false,
         'cloudflare_api_key' => '',
@@ -37,11 +39,14 @@ class Replanta_Ghost_Orders_Settings {
             'cloudflare_api_key' => sanitize_text_field($_POST['cloudflare_api_key'] ?? ''),
             'cloudflare_email' => sanitize_email($_POST['cloudflare_email'] ?? ''),
             'cloudflare_zone_id' => sanitize_text_field($_POST['cloudflare_zone_id'] ?? ''),
-            'mode' => sanitize_text_field($_POST['replanta_mode'] ?? 'vigilant'),
+            'mode' => sanitize_text_field($_POST['mode'] ?? 'vigilant'),
+            'check_interval' => sanitize_text_field($_POST['check_interval'] ?? 'twicedaily'),
             'detection_enabled' => !empty($_POST['detection_enabled']),
+            'email_notifications' => !empty($_POST['email_notifications']),
+            'lswc_auto_config' => !empty($_POST['lswc_auto_config']),
         ];
         
-        // Mantener opciones existentes
+        // Mantener opciones existentes y hacer merge
         $existing = self::get_option();
         $merged = array_merge($existing, $settings);
         
@@ -129,6 +134,8 @@ class Replanta_Ghost_Orders_Settings {
         return array_merge(self::$defaults, [
             'mode' => sanitize_text_field($settings['mode'] ?? 'vigilant'),
             'detection_enabled' => !empty($settings['detection_enabled']),
+            'check_interval' => sanitize_text_field($settings['check_interval'] ?? 'twicedaily'),
+            'email_notifications' => !empty($settings['email_notifications']),
             'lswc_auto_config' => !empty($settings['lswc_auto_config']),
             'cloudflare_auto_config' => !empty($settings['cloudflare_auto_config']),
             'cloudflare_api_key' => sanitize_text_field($settings['cloudflare_api_key'] ?? ''),
