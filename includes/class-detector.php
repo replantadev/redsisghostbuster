@@ -283,16 +283,29 @@ class Replanta_Ghost_Orders_Detector {
         
         $order = wc_get_order($order_id);
         if (!$order) {
-            wp_send_json_error('Pedido no encontrado');
+            wp_send_json_error('Pedido #' . $order_id . ' no encontrado');
         }
         
         $is_ghost = self::is_ghost_order($order);
         $redsys_data = self::get_redsys_data($order_id);
+        $status = $order->get_status();
+        
+        // Información adicional de diagnóstico
+        $diagnostic = [
+            'order_exists' => true,
+            'current_status' => $status,
+            'is_suspicious_status' => in_array($status, ['cancelled', 'pending', 'failed', 'on-hold']),
+            'payment_method' => $order->get_payment_method(),
+            'payment_method_title' => $order->get_payment_method_title(),
+            'date_created' => $order->get_date_created()->format('Y-m-d H:i:s'),
+            'total' => $order->get_total(),
+        ];
         
         wp_send_json_success([
             'is_ghost' => $is_ghost,
             'redsys_data' => $redsys_data,
-            'status' => $order->get_status(),
+            'status' => $status,
+            'diagnostic' => $diagnostic,
         ]);
     }
 }

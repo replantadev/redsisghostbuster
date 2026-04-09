@@ -134,41 +134,40 @@
         applyCloudflareRules: function(e) {
             e.preventDefault();
 
-            var apiKey = $('#replanta_cf_api_key').val();
-            var zoneId = $('#replanta_cf_zone').val();
+            var apiKey = $('#cloudflare_api_key').val();
+            var email = $('#cloudflare_email').val();
+            var zoneId = $('#cloudflare_zone_id').val();
 
             if (!apiKey || !zoneId) {
-                alert('Configura Cloudflare primero');
+                this.showMessage('Completa los campos de Cloudflare y guarda la configuración primero', 'error', '#replanta_cf_result');
                 return;
             }
 
-            if (!confirm('Aplicar reglas de Cloudflare? Esto habilitara las notificaciones de Redsys.')) {
+            if (!confirm('¿Aplicar reglas de Cloudflare? Esto creará una regla WAF para permitir las notificaciones de Redsys.')) {
                 return;
             }
 
             var $btn = $(e.target);
             var originalText = $btn.text();
             $btn.prop('disabled', true).text('Aplicando...');
-            var $status = $('#replanta_apply_cf_status');
+            var $result = $('#replanta_cf_result');
 
             $.ajax({
                 url: ajaxurl,
                 type: 'POST',
                 data: {
                     action: 'replanta_god_apply_cf_rules',
-                    nonce: repl_god_obj.nonce,
-                    api_key: apiKey,
-                    zone_id: zoneId
+                    nonce: repl_god_obj.nonce
                 },
                 success: function(response) {
                     if (response.success) {
-                        $status.html('<span class="success">[OK] Reglas aplicadas correctamente</span>');
+                        $result.html('<span class="success">[OK] ' + response.data.message + '</span>');
                     } else {
-                        $status.html('<span class="error">[ERROR] ' + response.data + '</span>');
+                        $result.html('<span class="error">[ERROR] ' + response.data + '</span>');
                     }
                 },
                 error: function() {
-                    $status.html('<span class="error">[ERROR] Error de conexion</span>');
+                    $result.html('<span class="error">[ERROR] Error de conexión</span>');
                 },
                 complete: function() {
                     $btn.prop('disabled', false).text(originalText);
@@ -442,34 +441,75 @@
                         var data = response.data;
                         var isGhost = data.is_ghost;
                         var redsysData = data.redsys_data;
-                        var status = data.status;
+                        var diagnostic = data.diagnostic || {};
                         
                         var resultHtml = '<div style="padding: 15px; border-left: 4px solid ' + (isGhost ? '#dc3232' : '#46b450') + '; background: ' + (isGhost ? '#fef0f0' : '#f0f6f0') + '; margin-top: 10px;">';
-                        resultHtml += '<strong>Resultado del Test - Pedido #' + orderId + '</strong><br><br>';
-                        resultHtml += '<strong>Estado actual:</strong> ' + status + '<br>';
-                        resultHtml += '<strong>¿Es pedido fantasma?:</strong> ' + (isGhost ? '⚠️ SÍ - REQUIERE ATENCIÓN' : '✅ NO') + '<br><br>';
+                        resultHtml += '<h3 style="margin-top: 0;">📊 Diagnóstico Pedido #' + orderId + '</h3>';
+                        
+                        // Resultado principal
+                        resultHtml += '<div style="background: white; padding: 10px; margin: 10px 0; border-radius: 3px;">';
+                        resultHtml += '<strong>¿Es pedido fantasma?:</strong> ';
+                        if (isGhost) {
+                            resultHtml += '<span style="color: #dc3232; font-weight: bold;">⚠️ SÍ - REQUIERE ATENCIÓN</span>';
+                        } else {
+                            resultHtml += '<span style="color: #46b450; font-weight: bold;">✅ NO</span>';
+                        }
+                        resultHtml += '</div>';
+                        
+                        // Información del pedido
+                        resultHtml += '<div style="background: white; padding: 10px; margin: 10px 0; border-radius: 3px;">';
+                        resultHtml += '<strong>📦 Información del Pedido</strong><br>';
+                        resultHtml += '<strong>Estado actual:</strong> ' + diagnostic.current_status + '<br>';
+                        resultHtml += '<strong>Método de pago:</strong> ' + diagnostic.payment_method_title + ' (' + diagnostic.payment_method + ')<br>';
+                        resultHtml += '<strong>Fecha:</strong> ' + diagnostic.date_created + '<br>';
+                        resultHtml += '<strong>Total:</strong> ' + diagnostic.total + '€<br>';
+                        resultHtml += '<strong>Estado sospechoso?:</strong> ' + (diagnostic.is_suspicious_status ? 'Sí (cancelled/pending/failed/on-hold)' : 'No') + '<br>';
+                        resultHtml += '</div>';
+                        
+                        // Información de Redsys
+                        resultHtml += '<div style="background: white; padding: 10px; margin: 10px 0; border-radius: 3px;">';
+                        resultHtml += '<strong>💳 Datos de Redsys</strong><br>';
                         
                         if (redsysData.is_authorized) {
-                            resultHtml += '<strong>Estado en Redsys:</strong> ✅ AUTORIZADO<br>';
+                            resultHtml += '<strong>Estado:</strong> <span style="color: #46b450;">✅ AUTORIZADO</span><br>';
                             if (redsysData.auth_code) {
-                                resultHtml += '<strong>Código de autorización:</strong> <code>' + redsysData.auth_code + '</code><br>';
+                                resultHtml += '<strong>Código autorización:</strong> <code style="background: #f0f0f1; padding: 2px 6px; border-radius: 3px;">' + redsysData.auth_code + '</code><br>';
                             }
                             if (redsysData.ds_response) {
-                                resultHtml += '<strong>Ds_Response:</strong> <code>' + redsysData.ds_response + '</code><br>';
+                                resultHtml += '<strong>Ds_Response:</strong> <code style="background: #f0f0f1; padding: 2px 6px; border-radius: 3px;">' + redsysData.ds_response + '</code><br>';
                             }
                             if (redsysData.transaction_id) {
-                                resultHtml += '<strong>Transaction ID:</strong> <code>' + redsysData.transaction_id + '</code><br>';
+                                resultHtml += '<strong>Transaction ID:</strong> <code style="background: #f0f0f1; padding: 2px 6px; border-radius: 3px;">' + redsysData.transaction_id + '</code><br>';
                             }
                             if (redsysData.sources && redsysData.sources.length > 0) {
                                 resultHtml += '<strong>Fuente de datos:</strong> ' + redsysData.sources.join(', ') + '<br>';
                             }
                         } else {
-                            resultHtml += '<strong>Estado en Redsys:</strong> ❌ NO AUTORIZADO / SIN DATOS<br>';
+                            resultHtml += '<strong>Estado:</strong> <span style="color: #dc3232;">❌ NO AUTORIZADO / SIN DATOS</span><br>';
+                            resultHtml += '<em>No se encontraron metadatos de Redsys en este pedido.</em><br>';
+                            resultHtml += '<em>Campos buscados: _authorisation_code_redsys, _redsys_Ds_Response, notas del pedido</em>';
                         }
+                        resultHtml += '</div>';
                         
+                        // Explicación y acción
                         if (isGhost) {
-                            resultHtml += '<br><strong>⚠️ ACCIÓN NECESARIA:</strong> Este pedido está pagado en Redsys pero marcado como "' + status + '" en WooCommerce.<br>';
-                            resultHtml += 'Se recomienda cambiar el estado a "processing" o "completed" manualmente.';
+                            resultHtml += '<div style="background: #fff3cd; padding: 10px; margin: 10px 0; border-radius: 3px; border: 1px solid #ffc107;">';
+                            resultHtml += '<strong>⚠️ ACCIÓN NECESARIA:</strong><br>';
+                            resultHtml += 'Este pedido está <strong>pagado y autorizado en Redsys</strong> pero tiene estado <strong>"' + diagnostic.current_status + '"</strong> en WooCommerce.<br><br>';
+                            resultHtml += '<strong>Recomendación:</strong> Cambiar manualmente el estado a "processing" o "completed" desde el editor de pedidos.';
+                            resultHtml += '</div>';
+                        } else if (!redsysData.is_authorized) {
+                            resultHtml += '<div style="background: #e7f3ff; padding: 10px; margin: 10px 0; border-radius: 3px; border: 1px solid #72aee6;">';
+                            resultHtml += '<strong>ℹ️ Información:</strong><br>';
+                            resultHtml += 'Este pedido NO se detecta como fantasma porque:<br>';
+                            if (!diagnostic.is_suspicious_status) {
+                                resultHtml += '• El estado "' + diagnostic.current_status + '" no es sospechoso<br>';
+                            }
+                            if (!redsysData.is_authorized) {
+                                resultHtml += '• No se encontraron datos de autorización de Redsys<br>';
+                                resultHtml += '• Verifica que el gateway de Redsys esté guardando los metadatos correctamente';
+                            }
+                            resultHtml += '</div>';
                         }
                         
                         resultHtml += '</div>';
