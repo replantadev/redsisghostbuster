@@ -87,47 +87,78 @@ class Replanta_Ghost_Orders_Cloudflare_API {
     
     /**
      * Probar conexión con Cloudflare
+     * Usa GET /zones/{zone_id} para validar directamente el acceso a la zona configurada,
+     * tanto si es tu propia cuenta como si eres admin de una cuenta de cliente.
      */
     public static function test_connection() {
-        $response = self::api_request('GET', '/zones');
-        
-        if (!isset($response['success'])) {
+        $creds = self::get_credentials();
+        if ( ! $creds ) {
             return [
                 'success' => false,
-                'message' => 'Respuesta inválida de Cloudflare',
-                'response' => $response,
+                'message' => 'Credenciales de Cloudflare no configuradas',
             ];
         }
-        
-        if ($response['success']) {
+
+        $response = self::api_request( 'GET', '/zones/' . $creds['zone_id'] );
+
+        // WP_Error o credenciales no configuradas devuelven array con 'message' pero sin 'errors'
+        if ( ! is_array( $response ) ) {
+            return [
+                'success' => false,
+                'message' => 'Respuesta inválida de Cloudflare (no JSON)',
+            ];
+        }
+
+        if ( ! isset( $response['success'] ) ) {
+            // Puede ser un array con solo 'message' (WP_Error path)
+            $msg = $response['message'] ?? 'Respuesta inválida de Cloudflare';
+            return [
+                'success' => false,
+                'message' => $msg,
+            ];
+        }
+
+        // Propagar error de wp_remote_request que llega con clave 'message' interna
+        if ( ! $response['success'] && ! isset( $response['errors'] ) && isset( $response['message'] ) ) {
+            return [
+                'success' => false,
+                'message' => $response['message'],
+            ];
+        }
+
+        if ( $response['success'] ) {
+            $zone_name = $response['result']['name'] ?? $creds['zone_id'];
             return [
                 'success' => true,
                 'message' => 'Conexión exitosa',
-                'zones' => count($response['result'] ?? []),
+                'zone_name' => $zone_name,
+                'zones' => 1,
             ];
         }
-        
+
         // Cloudflare devolvió error específico
         $errors = $response['errors'] ?? [];
         $error_message = 'Error desconocido';
-        
-        if (!empty($errors)) {
+
+        if ( ! empty( $errors ) ) {
             $first_error = $errors[0];
             $error_message = $first_error['message'] ?? 'Error sin mensaje';
-            $error_code = $first_error['code'] ?? 0;
-            
+            $error_code = (int) ( $first_error['code'] ?? 0 );
+
             // Traducir errores comunes
-            if ($error_code === 9103) {
+            if ( 9103 === $error_code ) {
                 $error_message = 'Zone ID inválido o no tienes acceso a esta zona';
-            } elseif ($error_code === 6003) {
+            } elseif ( 6003 === $error_code ) {
                 $error_message = 'API Key inválido';
-            } elseif ($error_code === 9109) {
+            } elseif ( 9109 === $error_code ) {
                 $error_message = 'Email incorrecto para este API Key';
-            } elseif ($error_code === 10000) {
-                $error_message = 'Error de autenticación - verifica API Key y Email';
+            } elseif ( 10000 === $error_code ) {
+                $error_message = 'Error de autenticación — verifica API Key y Email';
+            } elseif ( 7003 === $error_code ) {
+                $error_message = 'Zone ID no encontrado o sin acceso desde esta cuenta';
             }
         }
-        
+
         return [
             'success' => false,
             'message' => $error_message,
@@ -277,6 +308,7 @@ class Replanta_Ghost_Orders_Cloudflare_API {
         Replanta_Ghost_Orders_Settings::update_option('cloudflare_email', $original_email);
         Replanta_Ghost_Orders_Settings::update_option('cloudflare_zone_id', $original_zone);
         
-        wp_send_json_success('✅ Conexión exitosa con Cloudflare (' . $test['zones'] . ' zonas accesibles)');
+        $zone_info = isset( $test['zone_name'] ) ? ' — zona: ' . $test['zone_name'] : '';
+        wp_send_json_success( '✅ Conexión exitosa con Cloudflare' . $zone_info );
     }
 }

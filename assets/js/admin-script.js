@@ -108,6 +108,7 @@
             $.ajax({
                 url: ajaxurl,
                 type: 'POST',
+                dataType: 'json',
                 data: {
                     action: 'replanta_god_test_cf',
                     nonce: repl_god_obj.nonce,
@@ -116,14 +117,17 @@
                     zone_id: zoneId
                 },
                 success: function(response) {
-                    if (response.success) {
+                    if (response && response.success) {
                         $result.html('<span class="success">[OK] ' + response.data + '</span>');
                     } else {
-                        $result.html('<span class="error">[ERROR] ' + response.data + '</span>');
+                        var msg = (response && response.data) ? response.data : 'Error inesperado del servidor';
+                        $result.html('<span class="error">[ERROR] ' + msg + '</span>');
                     }
                 },
-                error: function() {
-                    $result.html('<span class="error">[ERROR] Error de conexion</span>');
+                error: function(xhr) {
+                    var serverMsg = '';
+                    try { serverMsg = JSON.parse(xhr.responseText).data || ''; } catch(e) {}
+                    $result.html('<span class="error">[ERROR] ' + (serverMsg || 'Error de conexion (HTTP ' + xhr.status + ')') + '</span>');
                 },
                 complete: function() {
                     $btn.prop('disabled', false).text(originalText);

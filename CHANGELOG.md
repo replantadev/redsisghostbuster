@@ -2,6 +2,14 @@
 
 Todos los cambios notables en este proyecto se documentan en este archivo.
 
+## [1.3.0] - 2026-05-12
+
+### Fixed
+- **Cloudflare test de conexión**: corregido endpoint de `GET /zones` a `GET /zones/{zone_id}` para que funcione cuando el API Token/Key pertenece a una cuenta maestra con acceso delegado a zonas de clientes
+- **[ERROR] undefined**: corregido mensaje de error indefinido en el test de Cloudflare — `response.data` ahora tiene fallback y el AJAX usa `dataType: 'json'`
+- Propagación de errores de WP_Error en `api_request()` ya no queda silenciada como "Error desconocido"
+- Añadido código de error 7003 de Cloudflare (zona no encontrada desde esta cuenta)
+
 ## [1.2.4] - 2026-04-08
 
 ### Fixed
